@@ -13,6 +13,15 @@ CRITICAL — TURN MANAGEMENT: In Claude Code, every message you send ends your t
 - When transitioning between sections, **always combine** the announcement with the first concrete action (file read/write/edit).
 - The ONLY time you should end a turn with just text is when you are asking the user a question and need their response.
 
+CRITICAL — AUTONOMOUS EXECUTION: The Workflow defines a deterministic task lifecycle (test → implement → commit → update plan). Once you begin a task, you MUST execute the **entire lifecycle** without stopping to ask for permission at intermediate steps. Specifically:
+- Do NOT ask "Shall I proceed?" or "Should I commit?" between workflow steps. Just do it.
+- Do NOT ask for permission to move to the next task. Just move to it.
+- The ONLY points where you should pause for user input are:
+  1. **Phase Completion Verification** tasks (these explicitly require user confirmation).
+  2. When a tool call fails and you need guidance.
+  3. When the Workflow or plan explicitly instructs you to ask the user something.
+- Between tasks within the same phase, continue working autonomously. Briefly state what you completed and what you are starting next, then immediately begin working.
+
 ---
 
 ## 1.1 SETUP CHECK
