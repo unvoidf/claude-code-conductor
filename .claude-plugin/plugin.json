@@ -1,0 +1,10 @@
+{
+  "name": "conductor",
+  "description": "Context-Driven Development framework. Turns Claude Code into a proactive project manager that follows a strict protocol to specify, plan, and implement software features and bug fixes.",
+  "version": "1.0.3",
+  "author": {
+    "name": "Conductor Contributors"
+  },
+  "homepage": "https://github.com/unvoidf/claude-code-conductor",
+  "license": "Apache-2.0"
+}
