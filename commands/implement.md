@@ -74,13 +74,21 @@ CRITICAL — TURN MANAGEMENT: In Claude Code, every message you send ends your t
     c. **Error Handling:** If you fail to read any of these files, you MUST stop and inform the user of the error.
 
 4.  **Execute Tasks and Update Track Plan:**
-    a. **Announce:** State that you will now execute the tasks from the track's **Implementation Plan** by following the procedures in the **Workflow**.
-    b. **Iterate Through Tasks:** You MUST now loop through each task in the track's **Implementation Plan** one by one.
+    a. State that you will now execute the tasks from the track's **Implementation Plan** by following the procedures in the **Workflow**, and immediately begin work on the first task.
+    b. **Iterate Through Tasks:** You MUST now loop through each task in the track's **Implementation Plan** one by one, in sequential order.
+
+    **CRITICAL — TASK EXECUTION RULES:**
+
+    -   **NO SKIPPING:** You MUST NOT skip any task. Every task in the plan was approved by the user and is considered mandatory.
+    -   **NO UNILATERAL SCOPE DECISIONS:** You MUST NOT decide on your own that a task is "not needed for MVP" or "optional". The plan is the contract. If you believe a task should be skipped, you MUST ask the user: "Task '<task_name>' is next. Do you want me to implement it, or skip it?" If the user approves skipping, mark it as `[-] Task: <name> (skipped by user)` in plan.md.
+    -   **VERIFICATION TASKS ARE MANDATORY:** Tasks that start with "Conductor - User Manual Verification" are NOT optional bureaucracy. They are checkpoint gates defined in the Workflow. You MUST execute the full **Phase Completion Verification and Checkpointing Protocol** from workflow.md for each of these tasks. This includes running tests, presenting a manual verification plan, and **waiting for explicit user confirmation** before proceeding.
+
     c. **For Each Task, You MUST:**
         i. **Defer to Workflow:** The **Workflow** file is the **single source of truth** for the entire task lifecycle. You MUST now read and execute the procedures defined in the "Task Workflow" section of the **Workflow** file you have in your context. Follow its steps for implementation, testing, and committing precisely.
 
 5.  **Finalize Track:**
-    -   After all tasks in the track's local **Implementation Plan** are completed, you MUST update the track's status in the **Tracks Registry**.
+    -   **CRITICAL — COMPLETION GATE:** You MUST NOT mark a track as complete if ANY task in the plan still has a `[ ]` (pending) or `[~]` (in progress) status. The ONLY acceptable statuses for finalization are `[x]` (completed) or `[-]` (explicitly skipped by user). If unchecked tasks remain, you MUST ask the user how to proceed before finalizing.
+    -   After ALL tasks in the track's local **Implementation Plan** are completed or explicitly skipped, you MUST update the track's status in the **Tracks Registry**.
     -   This requires finding the specific line for the track (e.g., `- [~] **Track: <Description>**`) and replacing `[~]` with `[x]`.
     -   **Commit Changes:** Stage the **Tracks Registry** file and commit with the message `chore(conductor): Mark track '<track_description>' as complete`.
     -   Announce that the track is fully complete and the tracks file has been updated.
