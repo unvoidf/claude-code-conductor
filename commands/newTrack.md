@@ -156,8 +156,10 @@ CRITICAL — TURN MANAGEMENT: In Claude Code, every message you send ends your t
         *Link: [./<Relative Track Path>/](./<Relative Track Path>/)*
         ```
         (Replace `<Relative Track Path>` with the path to the track directory relative to the **Tracks Registry** file location.)
-7.  **Commit Code Changes:**
-    -   **Announce:** Inform the user you are committing the **Tracks Registry** changes.
-    -   **Commit Changes:** Stage the **Tracks Registry** files and commit with the message `chore(conductor): Add new track '<track_description>'`.
+7.  **Commit All Track Artifacts:**
+    -   **Announce:** Inform the user you are committing the new track and registry changes.
+    -   **Stage ALL files:** You MUST stage **both** the entire new track directory (`<Tracks Directory>/<track_id>/`) **and** the updated **Tracks Registry** file. This includes `index.md`, `metadata.json`, `spec.md`, and `plan.md` inside the track directory.
+    -   **Commit:** Commit all staged files with the message `chore(conductor): Add new track '<track_description>'`.
+    -   **Verify:** Run `git status --porcelain` after committing. If any track-related files remain unstaged or uncommitted, stage and amend the commit.
 8.  **Announce Completion:** Inform the user:
     > "New track '<track_id>' has been created and added to the tracks file. You can now start implementation by running `/conductor:implement`."
