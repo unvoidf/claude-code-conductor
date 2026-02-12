@@ -51,13 +51,16 @@ To find a file (e.g., "**Product Definition**") within a specific context (Proje
 Every Conductor command includes the rule: *"You must validate the success of every tool call."* This section defines **how** to validate.
 
 ### Shell / Bash Commands (git, npm, etc.)
-1.  **Check the output.** After every shell command, read the tool result. Look for error indicators: `error:`, `fatal:`, `CONFLICT`, `failed`, `not found`, `permission denied`, non-zero exit codes.
-2.  **Git-specific validations:**
+1.  **ONE COMMAND PER CALL:** You MUST run each meaningful shell command as a **separate** Bash tool call. Do NOT chain commands with `&&` or `;`. The only exception is pipes (`|`) for filtering output (e.g., `git status --porcelain | grep "^M"`), which are allowed.
+    -   **Correct:** Call 1: `git add file.txt` → validate → Call 2: `git commit -m "msg"` → validate
+    -   **Wrong:** `git add file.txt && git commit -m "msg"` (if `git add` silently skips files, the commit still runs)
+2.  **Check the output.** After every shell command, read the tool result. Look for error indicators: `error:`, `fatal:`, `CONFLICT`, `failed`, `not found`, `permission denied`, non-zero exit codes.
+3.  **Git-specific validations:**
     -   **`git add`**: After staging, run `git status --porcelain` and confirm the intended files appear as staged (`A`, `M`, `R` in the first column). If files are missing from the staging area, re-add them.
     -   **`git commit`**: The output MUST contain a line like `[branch hash] commit message`. If the output contains `nothing to commit`, `error`, or `aborting`, the commit **failed** — do NOT proceed as if it succeeded.
     -   **`git revert`**: The output MUST confirm the revert commit was created. If it shows `CONFLICT` or `error`, halt and inform the user.
     -   **`git diff` / `git log`**: If the output is empty when you expected content, re-check your arguments (commit range, file paths) before proceeding.
-3.  **On failure:** Do NOT silently continue. You MUST:
+4.  **On failure:** Do NOT silently continue. You MUST:
     a. Stop the current operation.
     b. Report the exact error output to the user.
     c. Suggest a remediation if obvious (e.g., "The file may not exist" or "There may be a merge conflict").

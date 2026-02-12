@@ -9,7 +9,7 @@
       "name": "conductor",
       "source": "./",
       "description": "Context-Driven Development plugin for Claude Code. Measure twice, code once.",
-      "version": "1.0.8",
+      "version": "1.0.9",
       "author": {
         "name": "unvoidf"
       }
