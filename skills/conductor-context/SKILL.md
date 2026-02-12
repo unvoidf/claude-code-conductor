@@ -43,3 +43,13 @@ To find a file (e.g., "**Product Definition**") within a specific context (Proje
 - **Specification**: `conductor/tracks/<track_id>/spec.md`
 - **Implementation Plan**: `conductor/tracks/<track_id>/plan.md`
 - **Metadata**: `conductor/tracks/<track_id>/metadata.json`
+
+---
+
+## Slash Command Boundaries
+
+**CRITICAL — NEVER SELF-INVOKE COMMANDS:** Conductor slash commands (`/conductor:setup`, `/conductor:implement`, `/conductor:newTrack`, etc.) can ONLY be executed by the **user** typing them. You MUST NOT attempt to invoke a slash command by writing it in your response text. If you believe a command should be run, **ask the user** to run it: e.g., "Please run `/conductor:implement` to begin implementation."
+
+**CRITICAL — KNOW WHEN NOT TO USE CONDUCTOR:** Not every code change requires the Conductor workflow. If the user asks for a small, isolated change (e.g., adjust a layout, change a color, rename a label, fix a typo, tweak CSS), you should **directly edit the code** without creating a new track or invoking `/conductor:implement`. Conductor tracks are for **planned, multi-task features or bug fixes** — not for ad-hoc tweaks. Use your judgment:
+- **Use Conductor:** "Add user authentication", "Build a settings page", "Refactor the database layer"
+- **Do NOT use Conductor:** "Move this button to the left", "Change the font size", "Add waist circumference back to the dashboard"
