@@ -46,6 +46,32 @@ To find a file (e.g., "**Product Definition**") within a specific context (Proje
 
 ---
 
+## Tool Call Validation Protocol
+
+Every Conductor command includes the rule: *"You must validate the success of every tool call."* This section defines **how** to validate.
+
+### Shell / Bash Commands (git, npm, etc.)
+1.  **Check the output.** After every shell command, read the tool result. Look for error indicators: `error:`, `fatal:`, `CONFLICT`, `failed`, `not found`, `permission denied`, non-zero exit codes.
+2.  **Git-specific validations:**
+    -   **`git add`**: After staging, run `git status --porcelain` and confirm the intended files appear as staged (`A`, `M`, `R` in the first column). If files are missing from the staging area, re-add them.
+    -   **`git commit`**: The output MUST contain a line like `[branch hash] commit message`. If the output contains `nothing to commit`, `error`, or `aborting`, the commit **failed** — do NOT proceed as if it succeeded.
+    -   **`git revert`**: The output MUST confirm the revert commit was created. If it shows `CONFLICT` or `error`, halt and inform the user.
+    -   **`git diff` / `git log`**: If the output is empty when you expected content, re-check your arguments (commit range, file paths) before proceeding.
+3.  **On failure:** Do NOT silently continue. You MUST:
+    a. Stop the current operation.
+    b. Report the exact error output to the user.
+    c. Suggest a remediation if obvious (e.g., "The file may not exist" or "There may be a merge conflict").
+    d. Await user instructions before retrying.
+
+### File Operations (read, write, edit)
+1.  **Read:** If a file read returns an error (file not found, permission denied), do NOT assume the file is empty or proceed with placeholder content. Halt and report.
+2.  **Write / Edit:** After writing or editing a file, if the tool reports an error, halt and report. Do NOT assume the write succeeded.
+
+### General Rule
+If you are **uncertain** whether a tool call succeeded (e.g., ambiguous output, unexpected format), treat it as a **failure** and ask the user to verify. Never assume success when in doubt.
+
+---
+
 ## Slash Command Boundaries
 
 **CRITICAL — NEVER SELF-INVOKE COMMANDS:** Conductor slash commands (`/conductor:setup`, `/conductor:implement`, `/conductor:newTrack`, etc.) can ONLY be executed by the **user** typing them. You MUST NOT attempt to invoke a slash command by writing it in your response text. If you believe a command should be run, **ask the user** to run it: e.g., "Please run `/conductor:implement` to begin implementation."
